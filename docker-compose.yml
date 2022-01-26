@@ -1,0 +1,34 @@
+version: "2"
+services:
+  db:
+    container_name: nonoob-db
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+      MYSQL_DATABASE: nonoob
+    ports:
+      - "3306:3306"
+    networks:
+        - nonoob-network
+  cache:
+    image: redis:3-alpine
+    container_name: nonoob-cache
+    ports:
+      - "6379:6379" 
+    networks:
+        - nonoob-network   
+  app:
+    image: php:7-apache
+    container_name: nonoob-web
+    volumes:
+      - .:/var/www/html
+    links:
+      - db:db
+      - cache:cache
+    ports:
+      - "80:80"
+    networks:
+        - nonoob-network
+networks:
+  nonoob-network:
+    driver: bridge
