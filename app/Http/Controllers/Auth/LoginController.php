@@ -34,10 +34,10 @@ class LoginController extends Controller
      */
     public function __construct() {
 		
-		\Event::listen(\Illuminate\Auth\Events\Login::class, function ($event) {
-			
-			\App\Models\Policy::setSession();
-		});
+//		\Event::listen(\Illuminate\Auth\Events\Login::class, function ($event) {
+//			
+//			\App\Models\Policy::setSession();
+//		});
 				
         $this->middleware('guest')->except('logout');
     }

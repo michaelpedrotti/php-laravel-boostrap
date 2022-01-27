@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\Role;
 use App\Http\Requests\RoleRequest;
 
-class RoleController extends Controller {
+class RoleController extends CrudController {
 	
 	protected $resource = 'role';
 	

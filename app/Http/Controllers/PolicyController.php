@@ -3,7 +3,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Policy; 
 
-class PolicyController extends Controller {
+class PolicyController extends CrudController {
 
 	protected $resource = 'policy';
 		

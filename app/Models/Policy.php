@@ -6,7 +6,7 @@ class Policy extends Model  {
     
     protected $primaryKey = 'id';
     
-    public $table = 'permissions';
+    public $table = 'policy';
     public $timestamps = false;
     
     /**
@@ -101,43 +101,43 @@ class Policy extends Model  {
 	 * 
 	 * @return null
 	 */
-	public static function setSession(){
-	
-		$model = \App\Models\Users::find(\Auth::user()->id);
-		$collection = $model->Roles;
-
-		$role = '';
-		$policies = [];
-		
-		if($collection && $collection->count() > 0){
-
-			$collection = $collection->first()->Roles;
-			if($collection && $collection->count() > 0){
-				
-				$model = $collection->first();
-				
-				$role = $model->uid;
-				
-				$policies = static::select()
-					->from('role_policy AS a')
-					->join('policy AS b', 'b.id', 'a.policy_id')
-					->where('a.role_id', $model->id)
-						->get()
-						->map(function($row){
-							
-							$row['uid'] = strtolower($row['resource'] . '-' . $row['method']);
-							
-							return $row;
-						})
-						->pluck('uid')
-							->toArray();
-						
-				sort($policies);
-			}
-		}
-		
-		$session = app('session.store');
-		$session->put('role', $role);
-		$session->put('policy', $policies);
-	}
+//	public static function setSession(){
+//	
+//		$model = \App\Models\Users::find(\Auth::user()->id);
+//		$collection = $model->Roles;
+//
+//		$role = '';
+//		$policies = [];
+//		
+//		if($collection && $collection->count() > 0){
+//
+//			$collection = $collection->first()->Roles;
+//			if($collection && $collection->count() > 0){
+//				
+//				$model = $collection->first();
+//				
+//				$role = $model->uid;
+//				
+//				$policies = static::select()
+//					->from('role_policy AS a')
+//					->join('policy AS b', 'b.id', 'a.policy_id')
+//					->where('a.role_id', $model->id)
+//						->get()
+//						->map(function($row){
+//							
+//							$row['uid'] = strtolower($row['resource'] . '-' . $row['method']);
+//							
+//							return $row;
+//						})
+//						->pluck('uid')
+//							->toArray();
+//						
+//				sort($policies);
+//			}
+//		}
+//		
+//		$session = app('session.store');
+//		$session->put('role', $role);
+//		$session->put('policy', $policies);
+//	}
 }

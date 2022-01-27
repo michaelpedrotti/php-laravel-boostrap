@@ -7,7 +7,7 @@ use App\Models\Users as Model;
 use App\Http\Requests\UserRequest;
 
 
-class UserController extends Controller {
+class UserController extends CrudController {
         
 	
 	protected $resource = 'user';
