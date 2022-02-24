@@ -1,7 +1,7 @@
 version: "2"
 services:
-  db:
-    container_name: nonoob-db
+  mysql:
+    container_name: nonoob-mysql
     image: mysql:5.7
     environment:
       MYSQL_ROOT_PASSWORD: root
@@ -10,21 +10,21 @@ services:
       - "3306:3306"
     networks:
         - nonoob-network
-  cache:
+  redis:
     image: redis:3-alpine
-    container_name: nonoob-cache
+    container_name: nonoob-redis
     ports:
       - "6379:6379" 
     networks:
         - nonoob-network   
-  app:
-    image: php:7-apache
-    container_name: nonoob-web
+  php:
+    image: pedrotti/laravel
+    container_name: nonoob-php
     volumes:
       - .:/var/www/html
     links:
-      - db:db
-      - cache:cache
+      - mysql:db
+      - redis:cache
     ports:
       - "80:80"
     networks:
