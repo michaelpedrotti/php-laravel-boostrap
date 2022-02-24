@@ -19,6 +19,14 @@ class UserSeeder extends Seeder {
 				//'first_login' => 'N', 
 				'created_at' => $datetime,
 				'updated_at' => $datetime,
+			],
+            [
+				'id' => '2',
+				'name' => 'User 1',
+				'email' => 'user1@xyz.io',
+				'password' => bcrypt('user1'),
+				'created_at' => $datetime,
+				'updated_at' => $datetime,
 			]
 		);
 	}

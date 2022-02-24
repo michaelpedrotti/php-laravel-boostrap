@@ -1,7 +1,7 @@
 version: "2"
 services:
   mysql:
-    container_name: nonoob-mysql
+    container_name: mp-mysql
     image: mysql:5.7
     environment:
       MYSQL_ROOT_PASSWORD: root
@@ -9,17 +9,18 @@ services:
     ports:
       - "3306:3306"
     networks:
-        - nonoob-network
+        - mp-network
   redis:
     image: redis:3-alpine
-    container_name: nonoob-redis
+    container_name: mp-redis
     ports:
       - "6379:6379" 
     networks:
-        - nonoob-network   
+        - mp-network   
   php:
     image: pedrotti/laravel
-    container_name: nonoob-php
+    container_name: mp-php
+    working_dir: /var/www/html 
     volumes:
       - .:/var/www/html
     links:
@@ -28,7 +29,7 @@ services:
     ports:
       - "80:80"
     networks:
-        - nonoob-network
+        - mp-network
 networks:
-  nonoob-network:
+  mp-network:
     driver: bridge
