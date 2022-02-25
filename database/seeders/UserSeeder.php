@@ -9,7 +9,7 @@ class UserSeeder extends Seeder {
 		
 		$datetime = date('Y-m-d H:i:s');
 
-		\DB::table('users')->insert(
+		\DB::table('users')->insert([
 			[
 				'id' => '1',
 				'name' => 'Administrador',
@@ -28,6 +28,6 @@ class UserSeeder extends Seeder {
 				'created_at' => $datetime,
 				'updated_at' => $datetime,
 			]
-		);
+		]);
 	}
 }

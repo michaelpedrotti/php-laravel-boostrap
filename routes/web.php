@@ -21,7 +21,8 @@ Route::group(['middleware' => ['auth']], function(Router $router){
 		'/' => 'App\Http\Controllers\HomeController',
 		'/user' => 'App\Http\Controllers\UserController',
 		'/profile' => 'App\Http\Controllers\ProfileController',
-		'/role' => 'App\Http\Controllers\RoleController'
+		'/role' => 'App\Http\Controllers\RoleController',
+		'/album' => 'App\Http\Controllers\AlbumController'
 	]);
 	
 	// Route::post('workorders/time', array('as'=>'workorders.time', 'uses'=>'WorkordersController@time'));

@@ -117,9 +117,7 @@ class CrudController extends Controller {
      */
     public function edit(Request $request, Response $response) {
 		
-        return view($this->resource . '.form', [
-			'model' => $this->getModel()
-		]);
+        return $this->create($request, $response);
     }	
 
     /**
