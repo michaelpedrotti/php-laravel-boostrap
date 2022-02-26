@@ -2,6 +2,9 @@
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\SoftDeletes;
+use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Redis;
 
 class Album extends Model  {
     
@@ -28,6 +31,66 @@ class Album extends Model  {
     }
     
     
+	public function fetchArtists(){
+		
+		$artists = [];
+		
+		$array = Redis::hGetAll('artist-list');
+		
+		if(!empty($array)){
+			
+			$artists = $array;
+		}
+		else {
+					
+			$client = Http::withHeaders(["Basic" => env('ALBUM_ARTIST_BASIC')])->get(env('ALBUM_ARTIST_URL'));
+			if($client->ok()){
+
+				foreach($client->json([]) as $list){
+
+					$array = array_pop($list);
+
+					$key = Arr::get($array, 'id', 0);
+					$val = Arr::get($array, 'name', 'Unknow');
+
+					$artists[$key] = $val;
+
+					// @todo: Set expires
+					Redis::hSet('artist-list', $key, $val);
+				}
+			}
+		}
+		
+		return $artists;
+	}
+	
+	public function findArtist($artist_id = 0){
+		
+		$array = [];
+		
+		$string = Redis::hGet('artist-detail', $artist_id);
+		
+		if(!empty($string)){
+			
+			$array = json_decode($string, true);
+		}
+		else {
+			
+			$client = Http::withHeaders(["Basic" => env('ALBUM_ARTIST_BASIC')])->get(env('ALBUM_ARTIST_URL').'/?artist_id='.$artist_id);
+			if($client->ok()){
+
+				$result = $client->json([]);
+
+				$array = array_pop($result);
+
+				// @todo: Set expires
+				Redis::hSet('artist-detail', $artist_id, json_encode($array));
+			}
+		}
+		return $array;
+	}
+	
+	
     /**
      *
      * @param array $filter

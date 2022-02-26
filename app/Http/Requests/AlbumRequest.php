@@ -3,6 +3,7 @@
 namespace App\Http\Requests;
 
 use Illuminate\Foundation\Http\FormRequest;
+use Illuminate\Support\Arr;
 
 class AlbumRequest extends FormRequest {
 
@@ -17,7 +18,7 @@ class AlbumRequest extends FormRequest {
             'year' => ['required'],
 			'artist_id' => ['required'],
 			'artist_id' => ['required'],
-			'cover' => ['required']
+			//'cover' => ['required']
         ];
     }
 	
@@ -29,4 +30,19 @@ class AlbumRequest extends FormRequest {
 			'cover.required' => 'Cover is required',
 		];
 	}
+	
+	protected function getValidatorInstance() {
+		
+		$messages = $this->messages();
+        
+        return parent::getValidatorInstance()->after(function($validator) {
+
+            $data = $validator->getData();
+			
+			if(!Arr::has($data, 'id') && ! Arr::has($_FILES, 'cover')){
+				
+				$validator->errors()->add('cover', $messages['cover.required']);
+			}
+        });
+    }
 }
