@@ -16,8 +16,6 @@ class AlbumController extends CrudController {
 		$this->model = $model;
 	}
 	
-
-	
 	protected function getFormRequest(){
 		
 		return AlbumRequest::class;
@@ -38,14 +36,21 @@ class AlbumController extends CrudController {
 			});
 	}
 	
-	/**
-	 * @override
-	 */
-	public function create(Request $request, Response $response){
+	protected function getEmptyForm(){
+		
+		$view = parent::getEmptyForm();
+		
+		$view->with('artists', $this->getModel()->fetchArtists());
+		
+		return $view;
+	}
 	
-		return view($this->resource . '.form', [
-			'artists' => $this->getModel()->fetchArtists(),
-			'model' => $this->getModel()
-		]);
-    }
+	protected function getForm($data = array()){
+		
+		$view = parent::getForm($data);
+		
+		$view->with('artists', $this->getModel()->fetchArtists());
+		
+		return $view;
+	}
 }

@@ -11,5 +11,5 @@
 
 @include('layout.partials.gallery', [
 	'url' => url("album"),
-	'allowAll' => true
+	'model' => $model
 ])

@@ -12,14 +12,14 @@ class ModelPolicy {
     use HandlesAuthorization;
 	
 	public function __call($method, $args) {
-		
+	
 		$exists = false;
-		$model = array_shift($args);
+		$model = array_pop($args);
 		$resource = class_basename($model);
 		$policy = strtolower($resource).'-'.$method;
 		
 		$session = Session::getFacadeRoot();
-				
+			
 		if(in_array($policy,  $session->get('policy', []))){
 			
 			$exists = true;
@@ -40,11 +40,11 @@ class ModelPolicy {
 				
 				$exists = true;
 			}
+			
+//			Log::info($query->getBindings());
+//			Log::info($query->toSql());
 		}
-
-//        Log::info($query->getBindings());
-//        Log::info($query->toSql());
-//		
+	
 		return $exists;
 		
 	}

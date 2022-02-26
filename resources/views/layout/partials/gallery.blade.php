@@ -7,39 +7,35 @@
 			<h4 class="card-title">Ekko Lightbox</h4>
 			@if(!isset($disableToolbar) || empty($disableToolbar))
 			<div class="card-tools">
-				@php if(!isset($policy)): $policy = ''; endif; @endphp
-
-				@if(isset($allowAll) || app_can($policy.'-create'))
+				@can('create', $model)
 					<a href="javascript:void(0)" data-action="create" class="btn btn-success">
 						<i class="fa fa-plus"></i> @lang('Add')
 					</a>
-				@endif
+				@endcan
 				@yield('toolbar')
 			</div>
 			@endif
 		</div>
-		
-			
-		
+
 		<div class="card-body">
 			<div class="row" data-type="gallery">
-				@foreach(range(2, 4) as $index)
 					<div class="col-sm-2">
 						<div class="text-right">
+							@can('update', $model)
 							<a href="javascript:void(0)" data-action="gallery-edit" data-id="">
 								<i class="fa fa-edit"></i>
 							</a>
-							@if(isset($allowAll) || app_can($policy.'-remove'))
-								<a href="javascript:void(0)" data-action="gallery-remove">
+							@endcan
+							@can('delete', $model)
+								<a href="javascript:void(0)" data-action="gallery-remove" data-id="">
 									<i class="fa fa-trash"></i>
 								</a>
-							@endif
+							@endcan
 						</div>
-						<a href="https://via.placeholder.com/1200/000000.png?text={{ $index }}" data-toggle="lightbox" data-title="sample {{ $index }} - black" data-gallery="gallery">
-							<img src="https://via.placeholder.com/300/000000?text={{ $index }}" class="img-fluid mb-2" alt="black sample">
+						<a href="javacript:void(0)" data-toggle="lightbox" data-title="sample - black" data-gallery="gallery">
+							<img src="" class="img-fluid mb-2" alt="black sample">
 						</a>
 					</div>
-				@endforeach
 			</div>
 		</div>
 	</div>
@@ -80,9 +76,7 @@
 				var base = selector.find('div').first().clone();
 				
 				selector.empty();
-				
-				console.log('base', base);
-				
+	
 				$.each(json.data, function(index, row){
 					
 					var card = base.clone();
@@ -90,6 +84,7 @@
 					
 					card.find('img').get(0).src = row.clover;
 					card.find('a[data-action=gallery-edit]').attr('data-id', row.id);
+					card.find('a[data-action=gallery-remove]').attr('data-id', row.id);
 					card.find('a[data-gallery=gallery]').attr('data-title', title).attr('href', row.clover);
 					selector.append(card);
 				});
@@ -111,6 +106,10 @@
 			
 		});
 		
+		APP.afterRemove.push(function(){
+			
+			fetchGallery();
+		});
 		//$('.filter-container').filterizr({gutterPixels: 3});
 		
 		fetchGallery();

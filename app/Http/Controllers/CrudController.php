@@ -115,7 +115,7 @@ class CrudController extends Controller {
      */
     public function index(Request $request, Response $response){
         
-		$this->authorize('update', \App\Models\User::class);
+		//$this->authorize('update', $this->getModel());
 
 //		if($request->user()->cannot('view', \App\Models\User::class)) {
 //            abort(403);
@@ -126,7 +126,7 @@ class CrudController extends Controller {
 		
 		//  return app(Gate::class)->authorize($ability, $arguments);
 		
-//		$response = \Illuminate\Support\Facades\Gate::inspect('update', \App\Models\User::class);
+//		$response = \Illuminate\Support\Facades\Gate::inspect('update', v);
 //		
 //		if ($response->allowed()) {
 //			// The action is authorized...
@@ -140,7 +140,10 @@ class CrudController extends Controller {
             return $this->getDataTable($request)->make(true);
         }
 		
-		return view($this->resource . '.index');
+		return view($this->resource . '.index', [
+			
+			'model' => new $this->model
+		]);
     }
 
     /**
@@ -218,7 +221,6 @@ class CrudController extends Controller {
 			$model->getConnection()->commit();
 			
 			$json['success'] = true;
-			$json['data'] = $model->toArray();
 			$json['msg'] = 'Removed';
 		}
 		catch (\Exception $e) {
@@ -227,6 +229,6 @@ class CrudController extends Controller {
 			$json['msg'] = $e->getMessage();
 		}
 		
-		return $response->setData($json);
+		return response()->json($json);
     }	
 }

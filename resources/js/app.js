@@ -189,6 +189,7 @@ APP.submit = function(e, method){
 };
 
 APP.afterSubmit = [];
+APP.afterRemove = [];
 
 
 APP.create = function(e){
@@ -264,7 +265,7 @@ APP.show = function(e){
 APP.remove = function(e){
 	
 	var button = $(this);
-	var id = APP.selected(button);
+	var id = button.attr('data-id') || APP.selected(button);
 	
 	if(!id){
 		
@@ -306,6 +307,11 @@ APP.remove = function(e){
 					APP.flash(json.msg || 'Saved', 'success');
 					
 					$(button.attr('data-table') || 'table.dataTable').DataTable().ajax.reload();
+					
+					$.each(APP.afterSubmit, function(idx, fn){
+					
+						fn(json, button, modal);
+					});
 				}
 				else {
 					
