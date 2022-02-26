@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use App\Models\Model as Model;
 use Yajra\DataTables\Facades\DataTables as Datatables;
@@ -61,6 +62,51 @@ class CrudController extends Controller {
 
 		return Datatables::eloquent($query);
 	}
+	
+	protected function getForm($data = array()){
+		
+		$model = $this->getModel();
+		
+		$model->getConnection()->beginTransaction();
+
+		$view = view($this->resource . '.form', [
+			'model' => $model
+		]);
+		
+		try {
+
+			app($this->getFormRequest());
+			
+			$model->fill($data);
+			$model->save();
+			$model->getConnection()->commit();
+
+			flash('Saved', 'success');
+		}
+		catch(ValidationException $e){
+
+			$view->withErrors($e->validator);
+			
+			flash('Check form fields', 'warning');
+		}
+		catch(\Exception $e) {
+
+			$model->getConnection()->rollBack();
+			flash($e->getMessage(), 'danger');   
+			
+			Log::info($e->getMessage());
+			Log::info($e->getTraceAsString());
+		}            
+		
+		return $view;
+	}
+	
+	protected function getEmptyForm(){
+		
+		return view($this->resource . '.form', [
+			'model' => $this->getModel()
+		]);
+	}
 
 	/**
      * 
@@ -104,9 +150,7 @@ class CrudController extends Controller {
      */
     public function create(Request $request, Response $response){
        
-		return view($this->resource . '.form', [
-			'model' => $this->getModel()
-		]);
+		return $this->getEmptyForm();
     }
 	
     /**
@@ -117,7 +161,7 @@ class CrudController extends Controller {
      */
     public function edit(Request $request, Response $response) {
 		
-        return $this->create($request, $response);
+        return $this->getEmptyForm();
     }	
 
     /**
@@ -128,40 +172,7 @@ class CrudController extends Controller {
      */
     public function store(Request $request, Response $response) {
 		
-		$model = $this->getModel();
-		
-		$model->getConnection()->beginTransaction();
-
-		$view = view($this->resource . '.form', [
-			'model' => $model
-		]);
-		
-		try {
-
-			app($this->getFormRequest());
-			
-			$model->fill($request->post());
-			$model->save();
-			$model->getConnection()->commit();
-
-			flash('Saved', 'success');
-		}
-		catch(ValidationException $e){
-
-			$view->withErrors($e->validator);
-			
-			flash('Check form fields', 'warning');
-		}
-		catch(\Exception $e) {
-
-			$model->getConnection()->rollBack();
-			flash($e->getMessage(), 'danger');   
-			
-			\Illuminate\Support\Facades\Log::info($e->getMessage());
-			\Illuminate\Support\Facades\Log::info($e->getTraceAsString());
-		}            
-		
-		return $view;
+		return $this->getForm($request->post());
     }
 	
 	/**
@@ -172,7 +183,7 @@ class CrudController extends Controller {
      */
     public function update(Request $request, Response $response) {
 		
-		return $this->store($request, $response);
+		return $this->getForm($request->post());
     }
 
     /**
