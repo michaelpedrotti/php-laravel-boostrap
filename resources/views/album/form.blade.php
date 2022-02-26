@@ -36,7 +36,7 @@
 	
 	<div class="form-group">
 		<label>Year</label>
-		<input type="text" name="year" value="{{ $model->year }}" class="form-control"  placeholder="Enter name">
+		<input type="number" name="year" value="{{ $model->year }}" class="form-control"  placeholder="Enter name">
 		@error('year')
 			<div class="form-text text-red">{{ $message }}</div>
 		@enderror
@@ -46,16 +46,7 @@
 	<div class="col-sm-12">
 		<div class="form-body">
 			<label class="control-label">Cover <span class="request">*</span></label>
-			@if(empty($model->cover))
-				<input type="file" name="cover" class="form-control"  placeholder="Attach clover">
-			@else
-			<div class="input-group">
-				<input type="file" name="cover" class="form-control"  placeholder="Attach clover">
-				<a href="{{ url('documents/download/'.$model->id ) }}" title="Baixar o documento" class="input-group-addon btn btn-link btn-default">
-					<i class="fa fa-download"></i>	
-				</a>
-			</div>
-			@endif
+			<input type="file" name="cover" class="form-control"  placeholder="Attach clover">
 			@error('cover')
 				<div class="form-text text-red">{{ $message }}</div>
 			@enderror

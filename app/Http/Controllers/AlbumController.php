@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 use App\Models\Album;
 use App\Http\Requests\AlbumRequest;
 use Illuminate\Http\Request;
-use Illuminate\Http\Response;
 use Yajra\DataTables\Facades\DataTables as Datatables;
 
 class AlbumController extends CrudController {
@@ -27,7 +26,7 @@ class AlbumController extends CrudController {
 		$query = $model->fetch($request->all());
 			
 		return Datatables::eloquent($query)
-			->editColumn('clover', function ($query) {
+			->editColumn('cover', function ($query) {
 				return 'data:image/gif;base64,'.base64_encode($query->cover);
 			})
 			->addColumn('artist', function ($query) use($model) {

@@ -28,6 +28,7 @@ class AlbumRequest extends FormRequest {
 			'year.required' => 'Email is required',
 			'artist_id.required' => 'Artist is required',
 			'cover.required' => 'Cover is required',
+			'cover.oversize' => 'Cover can not be bigger than 60Kb',
 		];
 	}
 	
@@ -35,13 +36,18 @@ class AlbumRequest extends FormRequest {
 		
 		$messages = $this->messages();
         
-        return parent::getValidatorInstance()->after(function($validator) {
+        return parent::getValidatorInstance()->after(function($validator) use($messages) {
 
             $data = $validator->getData();
 			
-			if(!Arr::has($data, 'id') && ! Arr::has($_FILES, 'cover')){
+			if(!Arr::has($data, 'id') && !Arr::has($_FILES, 'cover')){
 				
 				$validator->errors()->add('cover', $messages['cover.required']);
+			}
+			
+			if(Arr::has($_FILES, 'cover') && $_FILES['cover']['size'] > 60000){
+				
+				$validator->errors()->add('cover', $messages['cover.oversize']);
 			}
         });
     }

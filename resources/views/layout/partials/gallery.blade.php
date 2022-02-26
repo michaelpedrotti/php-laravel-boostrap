@@ -82,10 +82,10 @@
 					var card = base.clone();
 					var title = row.artist.name + ' - ' + row.name + ' <span title="'+ row.artist.twitter +'" class="badge badge-primary">'+ row.artist.twitter +'</span> <span class="badge badge-info right">' + row.year + '</span>';
 					
-					card.find('img').get(0).src = row.clover;
+					card.find('img').get(0).src = row.cover;
 					card.find('a[data-action=gallery-edit]').attr('data-id', row.id);
 					card.find('a[data-action=gallery-remove]').attr('data-id', row.id);
-					card.find('a[data-gallery=gallery]').attr('data-title', title).attr('href', row.clover);
+					card.find('a[data-gallery=gallery]').attr('data-title', title).attr('href', row.cover);
 					selector.append(card);
 				});
 			}  

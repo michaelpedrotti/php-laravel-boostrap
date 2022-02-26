@@ -69,15 +69,15 @@ class CrudController extends Controller {
 		
 		$model->getConnection()->beginTransaction();
 
-		$view = view($this->resource . '.form', [
-			'model' => $model
-		]);
+		$view = view($this->resource . '.form');
 		
 		try {
-
-			app($this->getFormRequest());
 			
 			$model->fill($data);
+			
+			app($this->getFormRequest());
+			
+			
 			$model->save();
 			$model->getConnection()->commit();
 
@@ -96,7 +96,9 @@ class CrudController extends Controller {
 			
 			Log::info($e->getMessage());
 			Log::info($e->getTraceAsString());
-		}            
+		}
+		
+		$view->with('model', $model);
 		
 		return $view;
 	}
@@ -115,25 +117,7 @@ class CrudController extends Controller {
      */
     public function index(Request $request, Response $response){
         
-		//$this->authorize('update', $this->getModel());
-
-//		if($request->user()->cannot('view', \App\Models\User::class)) {
-//            abort(403);
-//        }
-		// Illuminate\Foundation\Application
-		// Illuminate\Auth\Access\Gate
-		//dd(get_class_methods(\Illuminate\Support\Facades\Gate::getFacadeRoot()));
-		
-		//  return app(Gate::class)->authorize($ability, $arguments);
-		
-//		$response = \Illuminate\Support\Facades\Gate::inspect('update', v);
-//		
-//		if ($response->allowed()) {
-//			// The action is authorized...
-//		} 
-//		else {
-//		   dd($response->message());
-//		}
+		$this->authorize('view', $this->model);
 		
 		if ($request->isXmlHttpRequest()) {
 			
@@ -142,7 +126,7 @@ class CrudController extends Controller {
 		
 		return view($this->resource . '.index', [
 			
-			'model' => new $this->model
+			'model' => $this->model
 		]);
     }
 
@@ -152,6 +136,8 @@ class CrudController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function create(Request $request, Response $response){
+		
+		$this->authorize('create', $this->model);
        
 		return $this->getEmptyForm();
     }
@@ -164,6 +150,8 @@ class CrudController extends Controller {
      */
     public function edit(Request $request, Response $response) {
 		
+		$this->authorize('update', $this->model);
+		
         return $this->getEmptyForm();
     }	
 
@@ -174,6 +162,8 @@ class CrudController extends Controller {
      * @return \Illuminate\Http\Response
      */
     public function store(Request $request, Response $response) {
+		
+		$this->authorize('create', $this->model);
 		
 		return $this->getForm($request->post());
     }
@@ -186,6 +176,8 @@ class CrudController extends Controller {
      */
     public function update(Request $request, Response $response) {
 		
+		$this->authorize('update', $this->model);
+		
 		return $this->getForm($request->post());
     }
 
@@ -197,6 +189,8 @@ class CrudController extends Controller {
      */
     public function show(Request $request, Response $response) {
         
+		$this->authorize('show', $this->model);
+		
 		return view($this->resource . '.show', [
 			'model' => $this->getModel()
 		]);
