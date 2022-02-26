@@ -14,11 +14,13 @@ class HomeController extends Controller {
 	 * @return Illuminate\Contracts\View\View
 	 */
 	public function index(Request $request, Response $response) {
-				
-		return view('home.index', [
-
-            'boxes' => [],
-            'socials' => []
-        ]);
+		
+		return redirect('/album');
+		
+//		return view('home.index', [
+//
+//            'boxes' => [],
+//            'socials' => []
+//        ]);
 	}
 }

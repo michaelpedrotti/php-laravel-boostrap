@@ -13,6 +13,10 @@ Route::get('/password/reset/{token}', 'App\Http\Controllers\Auth\ResetPasswordCo
 Route::post('/password/email', 'App\Http\Controllers\Auth\ForgotPasswordController@sendResetLinkEmail')->name('password.email');
 Route::post('/password/reset', 'App\Http\Controllers\Auth\ResetPasswordController@reset');
 
+Route::get('/register', 'App\Http\Controllers\Auth\RegisterController@showRegistrationForm')->name('register');
+Route::post('/register', 'App\Http\Controllers\Auth\RegisterController@register');
+
+
 // https://laravel.com/docs/8.x/controllers#controller-middleware
 Route::group(['middleware' => ['auth']], function(Router $router){
 	
