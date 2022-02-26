@@ -19,17 +19,17 @@
 	
 	<div class="form-group">
 		<label>Artista</label>
-		<select class="form-control">
+		<select name="artist_id" class="form-control">
 			<option value="">Selecione</option>
-			@foreach($artists as $value => $display)
-				@if($display == $model->artist)
+			@foreach($artists ?? [] as $value => $display)
+				@if($value == $model->artist_id)
 					<option value="{{ $value }}" selected="selected">{{ $display }}</option>
 				@else
 					<option value="{{ $value }}">{{ $display }}</option>
 				@endif
 			@endforeach
 		</select>
-		@error('artist')
+		@error('artist_id')
 			<div class="form-text text-red">{{ $message }}</div>
 		@enderror
 	</div>
@@ -40,6 +40,26 @@
 		@error('year')
 			<div class="form-text text-red">{{ $message }}</div>
 		@enderror
+	</div>
+	
+	
+	<div class="col-sm-12">
+		<div class="form-body">
+			<label class="control-label">Cover <span class="request">*</span></label>
+			@if(empty($model->cover))
+				<input type="file" name="cover" class="form-control"  placeholder="Attach clover">
+			@else
+			<div class="input-group">
+				<input type="file" name="cover" class="form-control"  placeholder="Attach clover">
+				<a href="{{ url('documents/download/'.$model->id ) }}" title="Baixar o documento" class="input-group-addon btn btn-link btn-default">
+					<i class="fa fa-download"></i>	
+				</a>
+			</div>
+			@endif
+			@error('cover')
+				<div class="form-text text-red">{{ $message }}</div>
+			@enderror
+		</div>
 	</div>
 	
 </form>

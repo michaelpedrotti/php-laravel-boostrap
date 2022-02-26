@@ -169,6 +169,11 @@ APP.submit = function(e, method){
                 modal.modal('hide');
 				
 				$(button.attr('data-table') || 'table.dataTable').DataTable().ajax.reload();
+				
+				$.each(APP.afterSubmit, function(idx, fn){
+					
+					fn(content, button, modal);
+				});
             }
             // Senão houve um erro e o formulário atualizado pois tera os alertas
             // de erro
@@ -182,6 +187,9 @@ APP.submit = function(e, method){
         }  
     });
 };
+
+APP.afterSubmit = [];
+
 
 APP.create = function(e){
    

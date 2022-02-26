@@ -30,5 +30,6 @@ class EventServiceProvider extends ServiceProvider
 		
 		\App\Models\Users::observe(\App\Observers\UsersObserver::class);
         \App\Models\Role::observe(\App\Observers\RoleObserver::class);
+		\App\Models\Album::observe(\App\Observers\AlbumObserver::class);
     }
 }

@@ -7,24 +7,30 @@ class RolePolicySeeder extends Seeder {
 
 	public function run() {
 		
-		$roles = range(1, 2);
-		$policies = range(1, 12);
-		$rows = array();
 		$id = 1;
 		
-		foreach($roles as $role){
-			
-			foreach($policies as $policy){
+		foreach(range(1, 12) as $policy){
 
-				$rows[] = [
-					
-					'id' => $id,
-					'role_id' => $role,
-					'policy_id' => $policy,
-				];
-				
-				$id++;
-			}
+			$rows[] = [
+
+				'id' => $id,
+				'role_id' => 1,// ADMIN
+				'policy_id' => $policy,
+			];
+
+			$id++;
+		}
+		
+		foreach(range(1, 11) as $policy){
+
+			$rows[] = [
+
+				'id' => $id,
+				'role_id' => 2,// USER
+				'policy_id' => $policy,
+			];
+
+			$id++;
 		}
 
 		\DB::table('role_policy')->insert($rows);

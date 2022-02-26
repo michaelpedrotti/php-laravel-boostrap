@@ -14,9 +14,10 @@ class Album extends Model  {
     public $fillable = [
         'id',
 		'user_id',
+		'artist_id',
         'name',
-		'artist',
-		'year'
+		'year',
+		'cover'
     ];
     
     protected $casts = [];    
