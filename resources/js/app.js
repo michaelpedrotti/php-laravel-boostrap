@@ -210,7 +210,7 @@ APP.edit = function(e){
 	
 	var button = $(this);
     var modal = $(button.attr('data-modal') || '#modal-default');
-	var id = APP.selected(button); 
+	var id = button.attr('data-id') || APP.selected(button); 
 
 	if(!id){
 		
@@ -243,7 +243,7 @@ APP.show = function(e){
 	
 	var button = $(this);   
 	var modal = $(button.attr('data-modal') || '#modal-default');
-	var id = APP.selected(button); 
+	var id = button.attr('data-id') || APP.selected(button); 
 	
 	if(!id){
 		
