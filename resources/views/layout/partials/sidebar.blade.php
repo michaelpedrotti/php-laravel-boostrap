@@ -11,37 +11,13 @@
 			
 		@endforeach
 		
-		<li class="nav-header">Administration</li>
+		<li class="nav-header">Moat.ai</li>
 
 		<li class="nav-item">
-			<a href="#" class="nav-link">
+			<a href="{{  url('/album') }}" class="nav-link">
 				<i class="nav-icon fas fa-copy"></i>
-				<p>
-					Team
-					<i class="fas fa-angle-left right"></i>
-					<span class="badge badge-info right">6</span>
-				</p>
+				<p>Album</p>
 			</a>
-			<ul class="nav nav-treeview">
-				<li class="nav-item">
-					<a href="{{ url('user') }}" class="nav-link">
-						<i class="far fa-circle nav-icon"></i>
-						<p>User</p>
-					</a>
-				</li>
-				<li class="nav-item">
-					<a href="{{ url('role') }}" class="nav-link">
-						<i class="far fa-circle nav-icon"></i>
-						<p>Role</p>
-					</a>
-				</li>
-				<li class="nav-item">
-					<a href="{{ url('policy') }}" class="nav-link">
-						<i class="far fa-circle nav-icon"></i>
-						<p>Policy</p>
-					</a>
-				</li>
-			</ul>
 		</li>
 	</ul>
 </nav>

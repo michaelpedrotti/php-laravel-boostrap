@@ -9,7 +9,7 @@ class UserSeeder extends Seeder {
 		
 		$datetime = date('Y-m-d H:i:s');
 
-		\DB::table('users')->insert(
+		\DB::table('users')->insert([
 			[
 				'id' => '1',
 				'name' => 'Administrador',
@@ -19,7 +19,15 @@ class UserSeeder extends Seeder {
 				//'first_login' => 'N', 
 				'created_at' => $datetime,
 				'updated_at' => $datetime,
+			],
+            [
+				'id' => '2',
+				'name' => 'User 1',
+				'email' => 'user1@xyz.io',
+				'password' => bcrypt('user1'),
+				'created_at' => $datetime,
+				'updated_at' => $datetime,
 			]
-		);
+		]);
 	}
 }

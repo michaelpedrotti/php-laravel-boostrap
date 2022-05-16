@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
 use App\Models\Model as Model;
 use Yajra\DataTables\Facades\DataTables as Datatables;
@@ -61,88 +62,22 @@ class CrudController extends Controller {
 
 		return Datatables::eloquent($query);
 	}
-
-	/**
-     * 
-     *
-     * @return \Illuminate\Http\Response|Illuminate\Http\JsonResponse
-     */
-    public function index(Request $request, Response $response){
-        
-		$this->authorize('update', \App\Models\User::class);
-
-//		if($request->user()->cannot('view', \App\Models\User::class)) {
-//            abort(403);
-//        }
-		// Illuminate\Foundation\Application
-		// Illuminate\Auth\Access\Gate
-		//dd(get_class_methods(\Illuminate\Support\Facades\Gate::getFacadeRoot()));
-		
-		//  return app(Gate::class)->authorize($ability, $arguments);
-		
-//		$response = \Illuminate\Support\Facades\Gate::inspect('update', \App\Models\User::class);
-//		
-//		if ($response->allowed()) {
-//			// The action is authorized...
-//		} 
-//		else {
-//		   dd($response->message());
-//		}
-		
-		if ($request->isXmlHttpRequest()) {
-			
-            return $this->getDataTable($request)->make(true);
-        }
-		
-		return view($this->resource . '.index');
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create(Request $request, Response $response){
-       
-		return view($this->resource . '.form', [
-			'model' => $this->getModel()
-		]);
-    }
 	
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\Photo  $photo
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(Request $request, Response $response) {
-		
-        return view($this->resource . '.form', [
-			'model' => $this->getModel()
-		]);
-    }	
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request, Response $response) {
+	protected function getForm($data = array()){
 		
 		$model = $this->getModel();
 		
 		$model->getConnection()->beginTransaction();
 
-		$view = view($this->resource . '.form', [
-			'model' => $model
-		]);
+		$view = view($this->resource . '.form');
 		
 		try {
-
+			
+			$model->fill($data);
+			
 			app($this->getFormRequest());
 			
-			$model->fill($request->post());
+			
 			$model->save();
 			$model->getConnection()->commit();
 
@@ -159,11 +94,78 @@ class CrudController extends Controller {
 			$model->getConnection()->rollBack();
 			flash($e->getMessage(), 'danger');   
 			
-			\Illuminate\Support\Facades\Log::info($e->getMessage());
-			\Illuminate\Support\Facades\Log::info($e->getTraceAsString());
-		}            
+			Log::info($e->getMessage());
+			Log::info($e->getTraceAsString());
+		}
+		
+		$view->with('model', $model);
 		
 		return $view;
+	}
+	
+	protected function getEmptyForm(){
+		
+		return view($this->resource . '.form', [
+			'model' => $this->getModel()
+		]);
+	}
+
+	/**
+     * 
+     *
+     * @return \Illuminate\Http\Response|Illuminate\Http\JsonResponse
+     */
+    public function index(Request $request, Response $response){
+        
+		$this->authorize('view', $this->model);
+		
+		if ($request->isXmlHttpRequest()) {
+			
+            return $this->getDataTable($request)->make(true);
+        }
+		
+		return view($this->resource . '.index', [
+			
+			'model' => $this->model
+		]);
+    }
+
+    /**
+     * Show the form for creating a new resource.
+     *
+     * @return \Illuminate\Http\Response
+     */
+    public function create(Request $request, Response $response){
+		
+		$this->authorize('create', $this->model);
+       
+		return $this->getEmptyForm();
+    }
+	
+    /**
+     * Show the form for editing the specified resource.
+     *
+     * @param  \App\Models\Photo  $photo
+     * @return \Illuminate\Http\Response
+     */
+    public function edit(Request $request, Response $response) {
+		
+		$this->authorize('update', $this->model);
+		
+        return $this->getEmptyForm();
+    }	
+
+    /**
+     * Store a newly created resource in storage.
+     *
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
+     */
+    public function store(Request $request, Response $response) {
+		
+		$this->authorize('create', $this->model);
+		
+		return $this->getForm($request->post());
     }
 	
 	/**
@@ -174,7 +176,9 @@ class CrudController extends Controller {
      */
     public function update(Request $request, Response $response) {
 		
-		return $this->store($request, $response);
+		$this->authorize('update', $this->model);
+		
+		return $this->getForm($request->post());
     }
 
     /**
@@ -185,6 +189,8 @@ class CrudController extends Controller {
      */
     public function show(Request $request, Response $response) {
         
+		$this->authorize('show', $this->model);
+		
 		return view($this->resource . '.show', [
 			'model' => $this->getModel()
 		]);
@@ -209,7 +215,6 @@ class CrudController extends Controller {
 			$model->getConnection()->commit();
 			
 			$json['success'] = true;
-			$json['data'] = $model->toArray();
 			$json['msg'] = 'Removed';
 		}
 		catch (\Exception $e) {
@@ -218,6 +223,6 @@ class CrudController extends Controller {
 			$json['msg'] = $e->getMessage();
 		}
 		
-		return $response->setData($json);
+		return response()->json($json);
     }	
 }

@@ -169,6 +169,11 @@ APP.submit = function(e, method){
                 modal.modal('hide');
 				
 				$(button.attr('data-table') || 'table.dataTable').DataTable().ajax.reload();
+				
+				$.each(APP.afterSubmit, function(idx, fn){
+					
+					fn(content, button, modal);
+				});
             }
             // Senão houve um erro e o formulário atualizado pois tera os alertas
             // de erro
@@ -182,6 +187,10 @@ APP.submit = function(e, method){
         }  
     });
 };
+
+APP.afterSubmit = [];
+APP.afterRemove = [];
+
 
 APP.create = function(e){
    
@@ -202,7 +211,7 @@ APP.edit = function(e){
 	
 	var button = $(this);
     var modal = $(button.attr('data-modal') || '#modal-default');
-	var id = APP.selected(button); 
+	var id = button.attr('data-id') || APP.selected(button); 
 
 	if(!id){
 		
@@ -235,7 +244,7 @@ APP.show = function(e){
 	
 	var button = $(this);   
 	var modal = $(button.attr('data-modal') || '#modal-default');
-	var id = APP.selected(button); 
+	var id = button.attr('data-id') || APP.selected(button); 
 	
 	if(!id){
 		
@@ -256,7 +265,7 @@ APP.show = function(e){
 APP.remove = function(e){
 	
 	var button = $(this);
-	var id = APP.selected(button);
+	var id = button.attr('data-id') || APP.selected(button);
 	
 	if(!id){
 		
@@ -298,6 +307,11 @@ APP.remove = function(e){
 					APP.flash(json.msg || 'Saved', 'success');
 					
 					$(button.attr('data-table') || 'table.dataTable').DataTable().ajax.reload();
+					
+					$.each(APP.afterSubmit, function(idx, fn){
+					
+						fn(json, button, modal);
+					});
 				}
 				else {
 					

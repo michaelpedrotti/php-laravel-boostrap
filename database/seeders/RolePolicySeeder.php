@@ -2,29 +2,39 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class RolePolicySeeder extends Seeder {
 
 	public function run() {
 		
-		$roles = range(1, 2);
-		$policies = range(1, 12);
-		$rows = array();
 		$id = 1;
-		
-		foreach($roles as $role){
-			
-			foreach($policies as $policy){
+		$collection = DB::table('policy')->pluck('id');
 
-				$rows[] = [
-					
-					'id' => $id,
-					'role_id' => $role,
-					'policy_id' => $policy,
-				];
-				
-				$id++;
-			}
+		foreach($collection as $policy){
+			
+			$rows[] = [
+
+				'id' => $id,
+				'role_id' => 1,// ADMIN
+				'policy_id' => $policy,
+			];
+			
+			$id++;
+		}
+		
+		$collection->pop();// remove delete from album
+		
+		foreach($collection as $policy){
+			
+			$rows[] = [
+
+				'id' => $id,
+				'role_id' => 2,// USER
+				'policy_id' => $policy,
+			];
+			
+			$id++;
 		}
 
 		\DB::table('role_policy')->insert($rows);

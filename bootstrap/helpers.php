@@ -66,35 +66,14 @@ if(!function_exists('app_can')) {
 	 * @param string $ability Permissão a ser testada
      * @return bool
      */
-	function app_can($ability){
+	function app_can($ability, $model = 'Users'){
 		
 		if(\App::runningInConsole()) return true;
 		
-		$bool = false;
-		$array = (array)$ability;
-		
-        $sessao = app('session.store');
+		//\Log::info($builder->getBindings());
+        //\Log::info($builder->toSql());
 
-        if($sessao->has('role')) {
-
-            if(in_array($sessao->get('role'), $array)) {
-                
-				$bool = true;
-            } 
-        }
-    
-        if ($sessao->has('policy')) {
-           
-            foreach($sessao->get('policy') as $policy){       
-               
-				if (in_array($policy, $array)) {
-                    
-					$bool = true;
-                }
-            }
-        }
-		
-		return $bool;	
+		return app(\App\Policies\ModelPolicy::class)->$ability('\App\Models\\'.$model);	
 	}
 }
 

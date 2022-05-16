@@ -12,7 +12,7 @@ class PolicySeeder extends Seeder {
 		$methods = ['view', 'create', 'update', 'delete'];
 		$resources = [
 			
-			'User', 'Role', 'Policy'
+			'Users', 'Role', 'Policy', 'Album'
 		];
 		
 		foreach($methods as $method){
